@@ -65,7 +65,7 @@
 				Credits used this week
 			</h2>
 			<div class="mt-4">
-				{filteredCredits.length} credits
+				{filteredData.length} credits
 			</div>
 		</div>
 		<div class="w-full bg-black text-white p-10">
@@ -74,7 +74,7 @@
 				Payments this week
 			</h2>
 			<div class="mt-4">
-				{filteredData.length} sessions
+				{filteredCredits.length} sessions
 			</div>
 		</div>
 	</div>
