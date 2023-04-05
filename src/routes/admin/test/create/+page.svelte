@@ -159,7 +159,6 @@
 		{/each}
 	</section>
 	<button
-		disabled={questions.length >= 20}
 		on:click={() => (isModalOpen = true)}
 		class="btn-p mt-4 cursor-pointer disabled:bg-[rgba(0,0,0,.8)]">Add Question +</button
 	>
