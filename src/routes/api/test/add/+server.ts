@@ -26,6 +26,7 @@ export async function POST({ request }: any) {
 
 		return json({ success: true })
 	} catch (e) {
+    return json({ success: false ,message:e})
 		console.log(e)
 	}
 }
