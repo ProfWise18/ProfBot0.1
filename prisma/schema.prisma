@@ -1,6 +1,8 @@
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+
+  relationMode = "prisma"
 }
 
 generator client {
@@ -20,7 +22,7 @@ model Admin {
 
 model Test {
   id        Int        @id @default(autoincrement())
-  professor Admin      @relation(references: [id], fields: [profId], onDelete: Cascade)
+  professor Admin      @relation(references: [id], fields: [profId], onDelete: Cascade, onUpdate: NoAction)
   profId    Int        @default(1)
   name      String
   questions Question[]
@@ -30,10 +32,10 @@ model Test {
 
 model Question {
   id            Int    @id @default(autoincrement())
-  questionText  String
-  correctAnswer String
+  questionText  String @db.Text
+  correctAnswer String @db.Text
   marks         Int    @default(1)
-  test          Test   @relation(fields: [testId], references: [id], onDelete: Cascade)
+  test          Test   @relation(fields: [testId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   testId        Int
 }
 
@@ -56,7 +58,7 @@ model Student {
 
 model FreeCredits {
   id        Int      @id @default(autoincrement())
-  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   studentId Int
   used      Boolean  @default(false)
   createdAt DateTime @default(now())
@@ -65,7 +67,7 @@ model FreeCredits {
 
 model CreditsUsed {
   id        Int      @id @default(autoincrement())
-  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   studentId Int
   shareLink String
   createdAt DateTime @default(now())
@@ -74,7 +76,7 @@ model CreditsUsed {
 model PaymentSessions {
   id        Int      @id @default(autoincrement())
   paymentId String   @unique
-  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   studentId Int
   createdAt DateTime @default(now())
 }
@@ -82,15 +84,15 @@ model PaymentSessions {
 model Score {
   id        Int     @id @default(autoincrement())
   score     Json
-  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   studentId Int
-  test      Test    @relation(fields: [testId], references: [id], onDelete: Cascade)
+  test      Test    @relation(fields: [testId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   testId    Int
 }
 
 model Chat {
   id        Int       @id @default(autoincrement())
-  student   Student[] 
+  student   Student[]
   studentId Int
   prompt    String
   returnMsg String

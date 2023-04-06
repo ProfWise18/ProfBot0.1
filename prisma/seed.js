@@ -40,13 +40,29 @@ var client_1 = require("@prisma/client");
 var prisma = new client_1.PrismaClient();
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var tom;
+        var tom, alex;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, prisma.admin.findUnique({ where: { email: "tom@gmail.com" } })];
                 case 1:
                     tom = _a.sent();
-                    if (!!tom) return [3 /*break*/, 3];
+                    return [4 /*yield*/, prisma.admin.findUnique({ where: { email: "alex@gmail.com" } })];
+                case 2:
+                    alex = _a.sent();
+                    if (!!alex) return [3 /*break*/, 4];
+                    return [4 /*yield*/, prisma.admin.create({
+                            data: {
+                                name: "Alex",
+                                email: "alex@gmail.com",
+                                password: "admin"
+                            }
+                        })];
+                case 3:
+                    _a.sent();
+                    console.log("%ccreated admin tom succesfully", "color:green");
+                    _a.label = 4;
+                case 4:
+                    if (!!tom) return [3 /*break*/, 6];
                     return [4 /*yield*/, prisma.admin.create({
                             data: {
                                 name: "Tom",
@@ -54,11 +70,11 @@ function main() {
                                 password: "admin"
                             }
                         })];
-                case 2:
+                case 5:
                     _a.sent();
                     console.log("%ccreated admin tom succesfully", "color:green");
-                    _a.label = 3;
-                case 3:
+                    _a.label = 6;
+                case 6:
                     console.log("Admin already exists!");
                     return [2 /*return*/];
             }

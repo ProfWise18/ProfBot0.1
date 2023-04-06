@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { loading } from '$lib/store'
 	import { showMessage } from '$lib/util'
+	import { onMount } from 'svelte'
 	import { quintOut } from 'svelte/easing'
 	import { crossfade } from 'svelte/transition'
 
@@ -56,6 +57,13 @@
 		}
 	}
 
+	onMount(() => {
+		for(let i =0;i<50;i++){
+			questions.push({questionText:"WHo is barack obama.",correctAnswer:"Barack Obama's tenure as the 44th president of the United States began with his first inauguration on January 20, 2009, and ended on January 20, 2017. A Democrat from Illinois, Obama took office following a decisive victory over Republican nominee John McCain in the 2008 presidential election. Four years later, in the 2012 presidential election, he defeated Republican nominee Mitt Ro…",marks:1})
+			questions = questions
+		}
+	})
+
 	const handleSubmit = async (e) => {
 		const form = new FormData(e.target)
 		form.append('questions', JSON.stringify(questions))
@@ -87,6 +95,9 @@
 				alert('Created Succesfully!')
 				questions = []
 				form.clear()
+			}else{
+				loading.set(false);
+				alert("Error uploading test...")
 			}
 		} catch (e) {
 			console.error(e)
@@ -126,7 +137,7 @@
 					<label class="label">
 						<span class="label-text">What is your Question?</span>
 					</label>
-					<input
+					<textarea
 						type="text"
 						placeholder="Type here"
 						class="input input-bordered w-full "
@@ -137,7 +148,7 @@
 					<label class="label">
 						<span class="label-text">What is your Answer?</span>
 					</label>
-					<input
+					<textarea
 						type="text"
 						placeholder="Type here"
 						class="input input-bordered w-full "

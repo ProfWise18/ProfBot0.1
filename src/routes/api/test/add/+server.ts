@@ -3,30 +3,50 @@ import { json } from '@sveltejs/kit'
 
 export async function POST({ request }: any) {
   const formData = await request.formData()
-  
+
   interface Question {
-    questionText: string;
-    correctAnswer: string;
-    marks:number;
+    questionText: string
+    correctAnswer: string
+    marks: number
   }
 
-  const questions : Question[] = JSON.parse(formData.get('questions'));
-	try {
+  const questions: Question[] = JSON.parse(formData.get('questions'))
 
-		const test = await client.test.create({
+  try {
+    const test = await client.test.create({
       data: {
         name: formData.get('name'),
-        shareLink:crypto.randomUUID(),
-        questions: {
-          create:questions,
-        },
-      },
-      include: { questions: true },
+        shareLink: crypto.randomUUID()
+      }
     })
 
-		return json({ success: true })
-	} catch (e) {
-    return json({ success: false ,message:e})
-		console.log(e)
-	}
+    const newQuestions = await Promise.all(
+      questions.map((question) =>
+        client.question.create({
+          data: {
+            ...question,
+            test: {
+              connect: {
+                id: test.id
+              }
+            }
+          }
+        })
+      )
+    )
+
+    await client.test.update({
+      where: { id: test.id },
+      data: {
+        questions: {
+          connect: newQuestions.map((question) => ({ id: question.id }))
+        }
+      }
+    })
+
+    return json({ success: true })
+  } catch (e) {
+    console.log(e)
+    return json({ success: false, message: e })
+  }
 }
