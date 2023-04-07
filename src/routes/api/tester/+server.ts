@@ -55,6 +55,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			}
 		})
 
+		test_data.questions = _.shuffle(test_data?.questions);
+		if(test_data.questions.length > 5){
+			test_data.questions = _.shuffle(test_data?.questions);
+			test_data.questions.length = 5;
+		}
+
 		const prompt: string = `
 		You are a strict and angry examinee,you are motivating, you will conduct a test on the following test data : ${JSON.stringify(
 			test_data
