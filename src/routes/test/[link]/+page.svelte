@@ -170,6 +170,7 @@
 						}
 						if (res.status == 200) {
 							credits--
+							testEnded = true
 							showMessage({
 								_message: 'Credit used.',
 								type: 'success'

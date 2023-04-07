@@ -46,12 +46,18 @@
 						<span class="hidden lg:block">Logout</span>
 					</button>
 				</form>
-			{:else}
-				<NavLink title="Login" href="/login" />
+				
+				
+			{/if}
+			{#if !$page.data.admin && !$page.data.user}
+			<NavLink title="Login" href="/login" />
 				<NavLink title="Register" href="/register" />
 			{/if}
 			{#if $page.data.admin}
-				<NavLink title="Admin Panel" href="/admin" />
+			<NavLink title="Test" href="/test" />
+			<span class="w-full text-[rgba(255,255,255,.5)] hover:text-[rgba(255,255,255,.8)] cursor-pointer" on:click={() => window.location.href="/admin"}>
+				Admin Panel
+			</span>
 			{/if}
 		</div>
 	</div>

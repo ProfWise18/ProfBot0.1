@@ -8,7 +8,6 @@
 	let loading = false;
 
 	const { credits } = data.credits
-	const scores = data.results[0].scores
 	let isModal = false
 
 	const handleStudentChange = async (e) => {

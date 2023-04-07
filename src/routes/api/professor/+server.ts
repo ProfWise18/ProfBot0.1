@@ -83,7 +83,7 @@ export async function PATCH({request}:RequestEvent){
 			message:"Updated professor succesfully!"
 		})
 	}catch(e){
-		console.log(e);
+		console.log(data);
 		return json(e);
 	}
 }

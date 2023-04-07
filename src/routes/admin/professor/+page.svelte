@@ -37,15 +37,13 @@
 				method: 'POST',
 				body: form
 			})
-
+			loading = false;
+				isModalOpen = false
 			const res = await req.json()
 			if (res.status == 200) {
-				invalidate(() => true)
-
 				professors.push(res.prof)
 				professors = professors
 				e.target.reset()
-				isModalOpen = false
 			} else if (res.status == 500) {
 				showMessage({
 					type: 'Error',

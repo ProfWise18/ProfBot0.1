@@ -10,6 +10,9 @@ export const load: PageServerLoad = async () => {
 export const actions: Actions = {
   default({ cookies }) {
     // eat the cookie
+    let admin = false;
+    if(cookies.get('admin_session')) admin = true;
+
     cookies.set('session', '', {
       path: '/',
       expires: new Date(0),
@@ -21,6 +24,10 @@ export const actions: Actions = {
     })
 
     // redirect the user
-    throw redirect(302, '/login')
+    if(admin){
+      throw redirect(302, '/admin/login')
+    }else{
+      throw redirect(302, '/login')
+    }
   },
 }
