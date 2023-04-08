@@ -7,6 +7,15 @@ export async function load({ params, locals }) {
 	}
   const tests = await client.test.findMany({})
 
+  if(locals.admin && locals.user){
+    const user = await client.admin.findFirst({
+      where:{
+        email:locals.admin.email
+      }
+    })
+    return { user, tests }
+  }
+
   if(locals.user){
     const user = await client.student.findUnique({
       where: {
