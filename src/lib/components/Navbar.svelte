@@ -7,7 +7,7 @@
 <nav
 	class="flex bg-white justify-center items-center border-b h-[60px] fixed top-0 w-full z-[22] border-yellow-500"
 >
-	<div class="w-[80%] flex justify-between items-center">
+	<div class="w-[85%] flex justify-between items-center">
 		<a href="/" class="overflow-hidden h-[60px]">
 			<img src="/logor.png" class="w-[auto] h-[40px] rounded-lg mt-3 flex  object-cover" />
 		</a>
@@ -53,7 +53,12 @@
 			<NavLink title="Login" href="/login" />
 				<NavLink title="Register" href="/register" />
 			{/if}
-			{#if $page.data.admin}
+			{#if $page.data.admin && !$page.data.user}
+			<span class="w-full text-[rgba(255,255,255,.5)] hover:text-[rgba(255,255,255,.8)] cursor-pointer" on:click={() => window.location.href="/admin"}>
+				Admin Panel
+			</span>
+			{/if}
+			{#if $page.data.admin && !$page.data.user}
 			<NavLink title="Test" href="/test" />
 			<span class="w-full text-[rgba(255,255,255,.5)] hover:text-[rgba(255,255,255,.8)] cursor-pointer" on:click={() => window.location.href="/admin"}>
 				Admin Panel
