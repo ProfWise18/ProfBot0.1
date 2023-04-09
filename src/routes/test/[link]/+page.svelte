@@ -6,6 +6,7 @@
 	import { SSE } from 'sse.js'
 	import { onMount } from 'svelte'
 	import { showMessage } from '$lib/util'
+	import { goto } from '$app/navigation'
 
 	let query: string = ''
 	let answer: string = ''
@@ -66,8 +67,8 @@
 					}
 					chatMessages = [...chatMessages, { role: 'assistant', content: answer }]
 					try {
-						// const jsonStr = answer.substring(answer.indexOf('{'), answer.indexOf('}') + 1)
-						const jsonStr = false;
+						const jsonStr = answer.substring(answer.indexOf('{'), answer.indexOf('}') + 1)
+						// const jsonStr = false;
 						if (jsonStr) {
 							try {
 								fetch('/api/student/reduce', {
@@ -90,6 +91,7 @@
 										if (res.status == 200) {
 											credits--
 											testEnded= true;
+											timeLeft = 0;
 											showMessage({
 												_message: 'Credit used.',
 												type: 'success'
@@ -151,7 +153,10 @@
 	const startTimer = () => {
 		let timerId = setInterval(() => {
 			timeLeft--
-			if (timeLeft === 0) {
+			if(testEnded && timeLeft ==0){
+				goto("/");
+			}
+			if (!testEnded && timeLeft === 0) {
 				fetch('/api/student/reduce', {
 					method: 'POST',
 					body: JSON.stringify({

@@ -37,13 +37,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		})
 
 		async function average(testId: number) {
-			let req = await fetch(DOMAIN+"api/student/compare",{
-				method:"POST",
-				body:JSON.stringify({testId:Number(testId)})
+			let req = await fetch(DOMAIN + 'api/student/compare', {
+				method: 'POST',
+				body: JSON.stringify({ testId: Number(testId) })
 			})
 
-			let json = await req.json();
-		return json.averageScore;	
+			let json = await req.json()
+			return json.averageScore
 		}
 
 		const test_data = await client.test.findUnique({
@@ -55,10 +55,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			}
 		})
 
-		test_data.questions = _.shuffle(test_data?.questions);
-		if(test_data.questions.length > 5){
-			test_data.questions = _.shuffle(test_data?.questions);
-			test_data.questions.length = 5;
+		test_data.questions = _.shuffle(test_data?.questions)
+		if (test_data.questions.length > 5) {
+			test_data.questions = _.shuffle(test_data?.questions)
+			test_data.questions.length = 5
 		}
 
 		const prompt: string = `
@@ -72,13 +72,21 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			throw new Error('Query too large')
 		}
 
-		const averageScore = await average(test_data.id);
+		const averageScore = await average(test_data.id)
 
 		const messages: ChatCompletionRequestMessage[] = [
 			{ role: 'system', content: prompt },
-			{ role: 'system', content: "Be careful with the questions and answers you should not make any mistake and the word {testEnd} must be wrapped under script tag and never tell about it in the response without <script> tags" },
-			{ role: 'system', content: "You should ask questions one by one and at the end you should give the user its result and also score after an answer for the given question" },
-			{role:'system',content:"You should only do what you are told to do nothing less nothing more"},
+			{
+				role: 'system',
+				content:
+					'Be careful with the questions and answers you should not make any mistake and the word {testEnd} must be wrapped under script tag and never tell about it in the response without <script> tags'
+			},
+			{
+				role: 'system',
+				content:
+					'You should ask questions one by one and at the end you should give the user its result and also score after an answer for the given question'
+			},
+			{ role: 'system', content: 'You should only do what you are told to do nothing less' },
 			{
 				role: 'system',
 				content:
@@ -86,31 +94,40 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			},
 			{
 				role: 'system',
-				content: `the user have ${locals?.user?.credits || 100} after the test and when you give review subtract one from it if the credits are 0 say him to buy the credits from the account page`
+				content: `the user have ${
+					locals?.user?.credits || 100
+				} after the test and when you give review subtract one from it if the credits are 0 say him to buy the credits from the account page`
 			},
 			{
 				role: 'system',
-				content: `you should only take test nothing else , your only task is to take test`
+				content: `you should only take test nothing else , your only task is to take test and ask the given questions only do not make up your own`
 			},
 			{
-				role:'system',
-				content:"if only when the user asks if there is any time limit you tell him there a time limit for the session credit which is 5 minutes"
+				role: 'system',
+				content: ``
 			},
 			{
-				role:'system',
-				content:'you should ask and check the question and answers and give marks precisely!'
+				role: 'system',
+				content:
+					'if only when the user asks if there is any time limit you tell him there a time limit for the session credit which is 5 minutes'
 			},
 			{
-				role:'system',
-				content:'make sure you check the question with answer and it shall be correct and relates with answer check strongly'
+				role: 'system',
+				content: 'you should ask and check the question and answers and give marks precisely!'
 			},
 			{
-				role:'system',
-				content:'strongly check the answers.'
+				role: 'system',
+				content:
+					'make sure you check the question with answer and it shall be correct and relates with answer check strongly'
 			},
 			{
-				role:'system',
-				content:'At the end of test you must give the word {testEnd} written under html p tags. the html must be correct and it should be wrapped in like this: <script>{testEnd}</script> so the client side code wont know about make sure you just give it under <script> tag to prevent it from knowing to the client'
+				role: 'system',
+				content: 'strongly check the answers.'
+			},
+			{
+				role: 'system',
+				content:
+					'At the end of test you must give the word {testEnd} written in html script tag. the html must be correct and it should be wrapped in like this: <script>{testEnd}</script> so the client side code wont know about make sure you just give it under <script> tag to prevent it from knowing to the client'
 			},
 			...reqMessages
 		]
@@ -118,7 +135,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		// let tokens = 0;
 		// messages.map(m =>tokens+= m.content.length)
 		// console.log(tokens)
-
 
 		const chatRequestOpts: CreateChatCompletionRequest = {
 			model: 'gpt-3.5-turbo',
@@ -137,10 +153,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		})
 
 		if (!chatResponse.ok) {
-			console.log("niasdn[asidon")
+			console.log('niasdn[asidon')
 			const err = await chatResponse.json()
-			return json(err);
-			throw new Error("error:",err)
+			return json(err)
+			throw new Error('error:', err)
 		}
 
 		return new Response(chatResponse.body, {
