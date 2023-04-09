@@ -59,13 +59,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 		const MAX_QUESTIONS = 5
 		if (test_data.questions.length > MAX_QUESTIONS) {
-			test_data.questions = test_data.questions.slice(0, MAX_QUESTIONS)
+			test_data.questions = test_data.questions.slice(0, MAX_QUESTIONS-1)
 		}
 
 		const prompt: string = `
 		You are a strict and angry examinee,you are motivating, you will conduct a test on the following test data : ${JSON.stringify(
 			test_data
-		)};you will ask questions one by one after the users says start ,you will also tell the user about the marks on the question , and at the end you will a result with a feedback review score and tips for improving and you will also give a word '<script>{test ended}</script>' exactly like this and only at the end of test wrapped in <script> tag."
+		)};you will ask questions one by one after the users says start ,you will also tell the user about the marks on the question , and at the end you will a result with a feedback review score and tips for improving and you will also give a word '<script>{test ended}</script>' exactly like this and only at the end of test wrapped in <script> tag --testEnd must be wrapped in script"
 		`
 		tokenCount += getTokens(prompt)
 
