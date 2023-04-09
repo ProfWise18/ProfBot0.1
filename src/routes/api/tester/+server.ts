@@ -93,10 +93,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 				content: `you should only take test nothing else , your only task is to take test`
 			},
 			{
-				role: 'system',
-				content: `The average class score is ${averageScore},at the end of test you will also tell the user that you score is n% better than the class`
-			},
-			{
 				role:'system',
 				content:"if only when the user asks if there is any time limit you tell him there a time limit for the session credit which is 5 minutes"
 			},
