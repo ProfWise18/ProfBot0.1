@@ -55,10 +55,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			}
 		})
 
-		test_data.questions = _.shuffle(test_data?.questions)
-		if (test_data.questions.length > 5) {
-			test_data.questions = _.shuffle(test_data?.questions)
-			test_data.questions.length = 5
+		test_data.questions = _.shuffle(test_data.questions)
+
+		const MAX_QUESTIONS = 5
+		if (test_data.questions.length > MAX_QUESTIONS) {
+			test_data.questions = test_data.questions.slice(0, MAX_QUESTIONS)
 		}
 
 		const prompt: string = `
