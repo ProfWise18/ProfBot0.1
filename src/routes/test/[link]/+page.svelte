@@ -143,7 +143,7 @@
 	}
 
 	let timeLeft: number = 300
-	let credits
+	let credits:number;
 	if ($page.data.admin) {
 		credits = 5
 	} else {
@@ -180,6 +180,9 @@
 								_message: 'Credit used.',
 								type: 'success'
 							})
+							setTimeout(() => {
+								goto("/");
+							},1000)
 						} else {
 							showMessage({
 								_message: 'An error occured!',
