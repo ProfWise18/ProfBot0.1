@@ -18,7 +18,7 @@
 	<title>Professorbot</title>
 </svelte:head>
 <TopLoader />
-{#if !isAdmin}
+{#if !$page.url.pathname.includes('admin')}
 	<Navbar />
 {/if}
 <slot />

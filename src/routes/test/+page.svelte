@@ -3,10 +3,15 @@
 	import { showMessage } from '$lib/util'
 	export let data
 
-	const { user,tests } = data
+	const { admin,user,tests } = data
+
 
 	let disabled = false
-	if (user.credits <= 0) {
+
+	if(admin){
+		
+	}
+	if (!admin && user.credits <= 0 ) {
 		disabled = true
 	}
 	let link = ''

@@ -25,8 +25,9 @@ const register: Action = async ({ cookies, request }) => {
 	const password: string = String(data.get('password'))
 
 	const alreadyExists = await client.student.findUnique({ where: { email: email } })
+	const alreadyExistsAdmin = await client.admin.findUnique({ where: { email: email } })
 
-	if (alreadyExists) {
+	if (alreadyExists || alreadyExistsAdmin) {
 		return fail(400, { credentials: true })
 	}
 

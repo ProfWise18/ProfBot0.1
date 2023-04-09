@@ -13,7 +13,7 @@ export async function load({ params, locals }) {
         email:locals.admin.email
       }
     })
-    return { user, tests }
+    return { user,admin:null, tests }
   }
 
   if(locals.user){
@@ -23,7 +23,7 @@ export async function load({ params, locals }) {
       }
     })
   
-    return { user, tests }
+    return { user,admin:null, tests }
   }
 
   if(locals.admin){
@@ -32,7 +32,7 @@ export async function load({ params, locals }) {
         email:locals.admin.email
       }
     })
-    return { user, tests }
+    return { admin:user,user:null, tests }
   }
 
 

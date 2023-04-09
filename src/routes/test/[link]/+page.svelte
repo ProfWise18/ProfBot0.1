@@ -66,7 +66,8 @@
 					}
 					chatMessages = [...chatMessages, { role: 'assistant', content: answer }]
 					try {
-						const jsonStr = answer.substring(answer.indexOf('{'), answer.indexOf('}') + 1)
+						// const jsonStr = answer.substring(answer.indexOf('{'), answer.indexOf('}') + 1)
+						const jsonStr = false;
 						if (jsonStr) {
 							try {
 								fetch('/api/student/reduce', {
@@ -150,7 +151,7 @@
 	const startTimer = () => {
 		let timerId = setInterval(() => {
 			timeLeft--
-			if (!testEnded && timeLeft === 0) {
+			if (timeLeft === 0) {
 				fetch('/api/student/reduce', {
 					method: 'POST',
 					body: JSON.stringify({

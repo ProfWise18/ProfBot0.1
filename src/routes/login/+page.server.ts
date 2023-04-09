@@ -1,6 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit'
 import type { Action, Actions, PageServerLoad } from './$types'
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt'
 import { PrismaClient } from '@prisma/client'
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -14,9 +14,9 @@ const login: Action = async ({ cookies, request }) => {
 	const db = new PrismaClient()
 	const data = await request.formData()
 	const email = data.get('email')
-	const password:string = String(data.get('password'));
+	const password: string = String(data.get('password'))
 
-	function validateEmail(email:string) {
+	function validateEmail(email: string) {
 		const regex = /^[^\s@]+@torontoMU\.ca$/i
 		return regex.test(email)
 	}
@@ -26,14 +26,47 @@ const login: Action = async ({ cookies, request }) => {
 	}
 
 	const user = await db.student.findUnique({ where: { email } })
+	let comparedCorrect = false;
 
-	if (!user) {
-		return fail(400, { credentials: true })
-	}
+		if(user){
+			comparedCorrect = await bcrypt.compare(password, user.password)
+		}
 
-	let comparedCorrect = await bcrypt.compare(password, user.password)
-	if (!comparedCorrect) {
-		return fail(400, { credentials: true })
+	if (!user || !comparedCorrect) {
+		const admin = await db.admin.findUnique({ where: { email: email } })
+
+		if (!admin) {
+			if ((!admin && !user) || (!admin && !comparedCorrect)) {
+				return fail(400, { credentials: true })
+			}
+			return fail(400, { credentials: true })
+		}
+
+		if (admin.password != password) {
+			return fail(400, { credentials: true })
+		}
+
+		// generate new auth token just in case
+		const authenticatedUser = await db.admin.update({
+			where: { email: email },
+			data: { userAuthToken: crypto.randomUUID() }
+		})
+		cookies.set('admin_session', authenticatedUser.userAuthToken, {
+			// send cookie for every page
+			path: '/',
+			// server side only cookie so you can't use `document.cookie`
+			httpOnly: true,
+			// only requests from same site can send cookies
+			// https://developer.mozilla.org/en-US/docs/Glossary/CSRF
+			sameSite: 'strict',
+			// only sent over HTTPS in production
+			secure: process.env.NODE_ENV === 'production',
+			// set cookie to expire after a month
+			maxAge: 60 * 60 * 24 * 30
+		})
+
+		// redirect the user
+		throw redirect(302, '/admin')
 	}
 
 	// generate new auth token just in case

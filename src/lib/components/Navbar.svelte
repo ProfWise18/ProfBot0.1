@@ -54,15 +54,8 @@
 				<NavLink title="Register" href="/register" />
 			{/if}
 			{#if $page.data.admin && !$page.data.user}
-			<span class="w-full text-[rgba(255,255,255,.5)] hover:text-[rgba(255,255,255,.8)] cursor-pointer" on:click={() => window.location.href="/admin"}>
-				Admin Panel
-			</span>
-			{/if}
-			{#if $page.data.admin && !$page.data.user}
 			<NavLink title="Test" href="/test" />
-			<span class="w-full text-[rgba(255,255,255,.5)] hover:text-[rgba(255,255,255,.8)] cursor-pointer" on:click={() => window.location.href="/admin"}>
-				Admin Panel
-			</span>
+			<NavLink title="Admin Panel" href="/admin" />
 			{/if}
 		</div>
 	</div>

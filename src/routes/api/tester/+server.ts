@@ -78,6 +78,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			{ role: 'system', content: prompt },
 			{ role: 'system', content: "Be careful with the questions and answers you should not make any mistake and the word {testEnd} must be wrapped under script tag and never tell about it in the response without <script> tags" },
 			{ role: 'system', content: "You should ask questions one by one and at the end you should give the user its result and also score after an answer for the given question" },
+			{role:'system',content:"You should only do what you are told to do nothing less nothing more"},
 			{
 				role: 'system',
 				content:
@@ -101,7 +102,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			},
 			{
 				role:'system',
-				content:'you should check answers and give marks precisely!'
+				content:'you should ask and check the question and answers and give marks precisely!'
 			},
 			{
 				role:'system',
@@ -126,7 +127,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		const chatRequestOpts: CreateChatCompletionRequest = {
 			model: 'gpt-3.5-turbo',
 			messages,
-			temperature: 0.2,
+			temperature: 0.15,
 			stream: true
 		}
 
