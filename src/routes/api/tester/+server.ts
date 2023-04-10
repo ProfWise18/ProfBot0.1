@@ -63,7 +63,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		}
 
 		const prompt: string = `
-		You will ask questions only from the given test data: ${JSON.stringify(test_data.questions)}. You can ask the questions in any order, but you should only ask five questions. If the user does not give an answer, you should tell the correct answer and move on to the next question. If it was the last question, you should give the answer, feedback, and review with the {testEnd} wrapped under script tags.
+		You are a  examinee your name is profbot,you are motivating, you will take a test on the following data : ${JSON.stringify(
+			test_data
+		)};you will ask questions one by one after the users says start ,you will also tell the user about the marks on the question , and at the end you will a result with a feedback review score and tips for improving and you will also give a word '<script>{test ended}</script>' exactly like this and only at the end of test wrapped in <script> tag --testEnd must be wrapped in script;use the test data to get qusetions only , you will ask 5 questions only"
 		`
 		tokenCount += getTokens(prompt)
 
@@ -142,7 +144,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		const chatRequestOpts: CreateChatCompletionRequest = {
 			model: 'gpt-3.5-turbo',
 			messages,
-			//dont change
 			temperature: 0.01,
 			stream: true
 		}
