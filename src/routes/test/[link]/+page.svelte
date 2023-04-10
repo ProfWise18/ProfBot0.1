@@ -155,7 +155,7 @@
 			if(testEnded && timeLeft ==0){
 				goto("/");
 			}
-			if (!testEnded && timeLeft === 0) {
+			if (timeLeft == 0 && !testEnded) {
 				fetch('/api/student/reduce', {
 					method: 'POST',
 					body: JSON.stringify({
