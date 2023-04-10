@@ -221,7 +221,7 @@
 			{#if answer}
 				<ChatMessage type="assistant" message={answer} />
 			{/if}
-			{#if loading}
+			{#if loading && !testEnded}
 				<ChatMessage type="assistant" message="Loading..." />
 			{/if}
 		</div>
