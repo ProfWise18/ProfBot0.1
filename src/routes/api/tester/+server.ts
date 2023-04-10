@@ -101,11 +101,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			},
 			{
 				role: 'system',
-				content: `you should only take test nothing else , your only task is to take test and ask the given questions only do not make up your own`
-			},
-			{
-				role: 'system',
-				content: 'strictly follow the test data only'
+				content: `you should only take test nothing else , your only task is to take test and ask the given questions only do not make up your own questions`
 			},
 			{
 				role: 'system',
@@ -140,7 +136,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		const chatRequestOpts: CreateChatCompletionRequest = {
 			model: 'gpt-3.5-turbo',
 			messages,
-			temperature: 0.15,
+			temperature: 0.2,
 			stream: true
 		}
 
