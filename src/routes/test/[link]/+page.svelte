@@ -36,11 +36,12 @@
 
 	const handleSubmit = async () => {
 		loading = true
-		if (query == '') {
+		if (query.trim() == '') {
 			showMessage({
 				type: 'Error',
 				_message: 'Please enter a valid input.'
 			})
+			return;
 		}
 		chatMessages = [...chatMessages, { role: 'user', content: query }]
 		query = ''
@@ -68,7 +69,15 @@
 					chatMessages = [...chatMessages, { role: 'assistant', content: answer }]
 					try {
 						const jsonStr = answer.substring(answer.indexOf('{'), answer.indexOf('}') + 1)
+						console.log(jsonStr)
 						// const jsonStr = false;
+						if(jsonStr && $page.data.admin){
+							showMessage({
+								type:"success",
+								_message:"The test is over admin!"
+							});
+							return false;
+						}
 						if (jsonStr) {
 							try {
 								fetch('/api/student/reduce', {
@@ -153,6 +162,7 @@
 		let timerId = setInterval(() => {
 			timeLeft--
 			if(testEnded && timeLeft ==0){
+				clearInterval(timerId)
 				goto("/");
 			}
 			if (timeLeft == 0) {
@@ -160,7 +170,15 @@
 				if(testEnded){
 					return false;
 				}
-				
+
+				if($page.data.admin){
+					clearInterval(timerId);
+					showMessage({type:"Success",_message:"Hey admin test is ended!"})
+					return false;
+				}
+
+				clearInterval(timerId); 
+
 				fetch('/api/student/reduce', {
 					method: 'POST',
 					body: JSON.stringify({

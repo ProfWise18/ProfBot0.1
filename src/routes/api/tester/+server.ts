@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		const prompt: string = `
 		You are a  examinee your name is profbot,you are motivating, you will take a test on the following data : ${JSON.stringify(
 			test_data
-		)};you will ask questions one by one after the users says start ,you will also tell the user about the marks on the question , and at the end you will a result with a feedback review score and tips for improving and you will also give a word '<script>{test ended}</script>' exactly like this and only at the end of test wrapped in <script> tag --testEnd must be wrapped in script;use the test data to get qusetions only , you will ask 5 questions only"
+		)};you will ask questions one by one after the users says start and you will ask questions only from the test data,you will also tell the user about the marks on the question , and at the end you will a result with a feedback review score and tips for improving and you will also give a word '<script>{test ended}</script>' exactly like this and only at the end of test wrapped in <script> tag --testEnd must be wrapped in script;use the test data to get qusetions only , you will ask 5 questions only"
 		`
 		tokenCount += getTokens(prompt)
 
@@ -77,6 +77,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 		const messages: ChatCompletionRequestMessage[] = [
 			{ role: 'system', content: prompt },
+			{ role: 'system', content: "You must take the questiosn from the test data only! " },
+			{ role: 'system', content: "Ask the questions one by one as a list in order and don't mix them with some random questions" },
 			{
 				role: 'system',
 				content:
@@ -88,7 +90,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			},
 			{
 				role:'system',
-				content:"do not make your own questions and only aks five questions from the test data only --not make your own"
+				content:"do not make your own questions and only aks five questions from the test data only --not make your own --please-do-not-make-your-questions--just-use-the-questions-from-test-data"
 			},
 			{
 				role: 'system',
@@ -122,6 +124,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			},
 			{
 				role: 'system',
+				content: 'ask question from the test data only'
+			},
+			{
+				role: 'system',
 				content:
 					'make sure you check the question with answer and it shall be correct and relates with answer check strongly'
 			},
@@ -132,7 +138,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			{
 				role: 'system',
 				content:
-					'At the end of test you must give the word {testEnd} written in html script tag. the html must be correct and it should be wrapped in like this: <script>{testEnd}</script> so the client side code wont know about make sure you just give it under <script> tag to prevent it from knowing to the client'
+					'At the end of test you must give the word {testEnd} written in html script tag. the html must be correct and it should be wrapped in like this: <script>{testEnd}</script> so the client side code wont know about make sure you just give it under <script> tag to prevent it from knowing to the client --please-this-is-a-must --this is required to be in script tags so the frontend doesnt knows about it'
 			},
 			...reqMessages
 		]
@@ -144,7 +150,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		const chatRequestOpts: CreateChatCompletionRequest = {
 			model: 'gpt-3.5-turbo',
 			messages,
-			temperature: 0.01,
+			temperature: 0.75,
 			stream: true
 		}
 
