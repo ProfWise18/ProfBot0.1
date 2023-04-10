@@ -83,6 +83,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 					'Be careful with the questions and answers you should not make any mistake and the word {testEnd} must be wrapped under script tag and never tell about it in the response without <script> tags'
 			},
 			{
+				role:'system',
+				content:"if the user dont give answer you tell the correct answer and ask next question and if it was the last question give the answer , feedback and review with the {testEnd} wrapped under script tags"
+			}
+			{
 				role: 'system',
 				content:
 					'You should ask questions one by one'
