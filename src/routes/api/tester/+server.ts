@@ -63,7 +63,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		}
 
 		const prompt: string = `
-		You are a strict and angry examinee,you are motivating, you will take a test on the following data : ${JSON.stringify(
+		You are a  examinee,you are motivating, you will take a test on the following data : ${JSON.stringify(
 			test_data
 		)};you will ask questions one by one after the users says start ,you will also tell the user about the marks on the question , and at the end you will a result with a feedback review score and tips for improving and you will also give a word '<script>{test ended}</script>' exactly like this and only at the end of test wrapped in <script> tag --testEnd must be wrapped in script;dont make your own questions"
 		`
@@ -85,7 +85,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			{
 				role:'system',
 				content:"if the user dont give answer you tell the correct answer and ask next question and if it was the last question give the answer , feedback and review with the {testEnd} wrapped under script tags"
-			}
+			},
+			{
+				role:'system',
+				content:"do not make your own questions and only aks five questions"
+			},
 			{
 				role: 'system',
 				content:
