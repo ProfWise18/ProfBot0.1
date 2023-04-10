@@ -1,5 +1,5 @@
 import { json } from "@sveltejs/kit";
 
 export async function GET(){
-  return json("Welcome to profbot api vesrion: 0.1");
+  return json({message:"Welcome to profbot api ",version:0.1});
 }
