@@ -140,6 +140,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 				content:
 					'At the end of test you must give the word {testEnd} written in html script tag. the html must be correct and it should be wrapped in like this: <script>{testEnd}</script> so the client side code wont know about make sure you just give it under <script> tag to prevent it from knowing to the client --please-this-is-a-must --this is required to be in script tags so the frontend doesnt knows about it'
 			},
+			{
+				role:'system',
+				content:"Remember {testEnd} is really important at the end of test you must give it wrapped under <script> and do not share about it with user and aks questions one by one with the question number also"
+			}
 			...reqMessages
 		]
 
