@@ -76,6 +76,7 @@
 								type:"success",
 								_message:"The test is over admin!"
 							});
+							answer = "";
 							return false;
 						}
 						if (jsonStr) {
@@ -100,6 +101,7 @@
 										if (res.status == 200) {
 											credits--
 											testEnded= true;
+											answer = "";
 											showMessage({
 												_message: 'Credit used.',
 												type: 'success'
@@ -199,6 +201,7 @@
 						if (res.status == 200) {
 							credits--
 							testEnded = true
+							answer = "";
 							showMessage({
 								_message: 'Credit used.',
 								type: 'success'
