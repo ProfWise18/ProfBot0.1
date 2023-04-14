@@ -67,9 +67,10 @@
 						startTimer()
 					}
 					chatMessages = [...chatMessages, { role: 'assistant', content: answer }]
+					//try to catch the {testEnd} in the answer it will be hidden under script tags
 					try {
 						const jsonStr = answer.substring(answer.indexOf('{'), answer.indexOf('}') + 1)
-						console.log(jsonStr)
+						// console.log(jsonStr)
 						// const jsonStr = false;
 						if(jsonStr && $page.data.admin){
 							showMessage({

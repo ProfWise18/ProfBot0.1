@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		const messages: ChatCompletionRequestMessage[] = [
 			{ role: 'system', content: prompt },
 			{ role: 'system', content: '<script>testEnd</script> is a must at the end of test and it must! be wrapped under script tags' },
-			{ role: 'system', content: "You must take the questiosn from the test data only , dont make up your own questions " },
+			{ role: 'system', content: "make sure to only ask questions from the given test data and double-check your work before responding." },
 			{ role: 'system', content: "Ask the questions one by one as a list in order and don't mix them with some random questions" },
 			{
 				role: 'system',
