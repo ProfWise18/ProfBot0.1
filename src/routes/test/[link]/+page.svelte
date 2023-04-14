@@ -41,6 +41,7 @@
 				type: 'Error',
 				_message: 'Please enter a valid input.'
 			})
+			loading = false;
 			return;
 		}
 		chatMessages = [...chatMessages, { role: 'user', content: query }]
