@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		const prompt: string = `
 		You are a  examinee your name is profbot,you are motivating, you will take a test on the following data : ${JSON.stringify(
 			test_data
-		)};you will ask questions one by one after the users says start and you will ask questions only from the test data,you will also tell the user about the marks on the question , and at the end you will a result with a feedback review score and tips for improving and you will also give a word '<script>{test ended}</script>' exactly like this and only at the end of test wrapped in <script> tag --testEnd must be wrapped in script;use the test data to get qusetions only , you will ask 5 questions only and double check the questions before asking;ask question one by one and check the data before asking"
+		)};you will ask questions one by one after the users says start and you will ask questions only from the test data and you will double check it before asking,you will also tell the user about the marks on the question , and at the end you will a result with a feedback review score and tips for improving and you will also give a word '<script>{test ended}</script>' exactly like this and only at the end of test wrapped in <script> tag --testEnd must be wrapped in script;use the test data to get qusetions only , you will ask 5 questions only and double check the questions before asking;ask question one by one and check the data before asking;if the user have answered incorrect answer tell him the correct one and ask other one at the end the {testEnd} wrapped under script tags"
 		`
 		tokenCount += getTokens(prompt)
 
@@ -155,7 +155,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		const chatRequestOpts: CreateChatCompletionRequest = {
 			model: 'gpt-3.5-turbo',
 			messages,
-			temperature: 0.25,
+			temperature: 0.2,
 			stream: true
 		}
 
