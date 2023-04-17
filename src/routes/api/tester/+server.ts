@@ -144,7 +144,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			{
 				role:'system',
 				content:"Remember {testEnd} is really important at the end of test you must give it wrapped under <script> and do not share about it with user and aks questions one by one with the question number also"
-			}
+			},
 			...reqMessages
 		]
 
