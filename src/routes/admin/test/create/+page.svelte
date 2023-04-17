@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte'
 	import { quintOut } from 'svelte/easing'
 	import { crossfade } from 'svelte/transition'
+	import {page} from "$app/stores";
 
 	let isModalOpen = false
 
@@ -56,16 +57,10 @@
 			questions = questions
 		}
 	}
-
-	onMount(() => {
-		for(let i =0;i<50;i++){
-			questions.push({questionText:"WHo is barack obama.",correctAnswer:"Barack Obama's tenure as the 44th president of the United States began with his first inauguration on January 20, 2009, and ended on January 20, 2017. A Democrat from Illinois, Obama took office following a decisive victory over Republican nominee John McCain in the 2008 presidential election. Four years later, in the 2012 presidential election, he defeated Republican nominee Mitt Ro…",marks:1})
-			questions = questions
-		}
-	})
-
 	const handleSubmit = async (e) => {
 		const form = new FormData(e.target)
+		const profEmail = $page.data.admin.email;
+		form.append('profEmail',profEmail);
 		form.append('questions', JSON.stringify(questions))
 
 		if (form.get('name')?.toString().trim() == '') {
@@ -73,11 +68,11 @@
 				_message: 'Please enter a valid name.',
 				type: 'Error'
 			})
-			return
+			return false;
 		}
 
-		if (questions.length <= 0) {
-			alert('No questions')
+		if (questions.length < 5) {
+			alert('There must be atleast 5 questions!')
 			return false
 		}
 

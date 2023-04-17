@@ -10,16 +10,30 @@ export async function POST({ request }: any) {
     marks: number
   }
 
+  const profEmail = await formData.get('profEmail');
   const questions: Question[] = JSON.parse(formData.get('questions'))
 
   try {
+    const shareLink = crypto.randomUUID();
+
     const test = await client.test.create({
       data: {
         name: formData.get('name'),
-        shareLink: crypto.randomUUID()
-      }
-    })
+        shareLink: shareLink,
+      },
+    });
 
+    await client.$transaction([
+      client.admin.update({
+        where: { email: profEmail },
+        data: {
+          Test: {
+            connect: {shareLink:shareLink},
+          },
+        },
+      }),
+    ]);
+    
     const newQuestions = await Promise.all(
       questions.map((question) =>
         client.question.create({
@@ -27,7 +41,7 @@ export async function POST({ request }: any) {
             ...question,
             test: {
               connect: {
-                id: test.id
+                shareLink:shareLink
               }
             }
           }

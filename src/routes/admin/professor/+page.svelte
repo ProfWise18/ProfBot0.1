@@ -8,6 +8,7 @@
 	let { professors, tests } = data
 
 	let professorSessionUsed = []
+	let newProfs = [];
 	for (const prof of professors) {
 		const usedTests = prof.Test.reduce((acc, t) => {
 			const usedTest = tests
@@ -40,9 +41,19 @@
 			loading = false;
 				isModalOpen = false
 			const res = await req.json()
+
 			if (res.status == 200) {
+				
+
 				professors.push(res.prof)
 				professors = professors
+
+				showMessage({
+					type:"success",
+					_message:res.message
+				})
+				load.set(false)
+
 				e.target.reset()
 			} else if (res.status == 500) {
 				showMessage({
@@ -142,8 +153,8 @@
 					<tr>
 						<th>{professor.id}</th>
 						<td>{professor.email}</td>
-						<td>{professor.Test.length}</td>
-						<td>{professorSessionUsed.filter((f) => f.profId == professor.id).length}</td>
+						<td>{professor?.Test?.length || 0}</td>
+						<td>{professorSessionUsed?.filter((f) => f.profId == professor.id)?.length || 0}</td>
 						<td>
 							<button on:click={() => setCurrentProfessor(professor, i)} class="btn ">Edit</button>
 							<button class="btn btn-error" on:click={() => deleteProf(professor.id)}>Delete</button
