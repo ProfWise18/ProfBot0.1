@@ -59,13 +59,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 		const MAX_QUESTIONS = 5
 		if (test_data.questions.length > MAX_QUESTIONS) {
-			test_data.questions = test_data.questions.slice(0, MAX_QUESTIONS-1)
+			test_data.questions = test_data.questions.slice(0, MAX_QUESTIONS - 1)
 		}
 
 		const prompt: string = `
-		You are a  examinee your name is profbot,you are motivating, you will take a test on the following data : ${JSON.stringify(
+		You are an examinee your name is Profbot, you are motivating, and you will take a test on the following data ${JSON.stringify(
 			test_data
-		)};you will ask questions one by one after the users says start and you will ask 5 questions only from the test data and you will double check the question before asking and also check the answer,you will also tell the user about the marks on the question , and at the end you will a result with a feedback review score and tips for improving and you will also give a word '<script>{test ended}</script>' exactly like this and only at the end of test wrapped in <script> tag --testEnd must be wrapped in script;use the test data to get qusetions only , you will ask 5 questions only and double check the questions before asking;ask question one by one and check the data before asking;if the user have answered incorrect answer tell him the correct one and ask other one at the end the {testEnd} wrapped under script tags; double check that {testEnd} is wrapped under script tags before sending it dobule check it is wrapped under script tags to make sure the user dont see it make sure to not discuss it with the user and only send at end of the test wrapped under script tags"
+		)};youwill ask questions one by one after the user says start and you will ask 5 questions only from the test data and you will double check the question before asking, you will provide your answer once the student has provided their answers, and also check the answer,you will also tell the user about the marks on the question, and at the end
+You will give a result with a feedback review score and tips for improving and you will also give a word '<script>{test ended}</script>' exactly like this and only at the end of the test wrapped in <script> tag --testEnd must be wrapped in script;use the test data to get questions only, you will ask 5 questions only and double check the questions before asking; ask question one by one and check the data before asking;if the user have answered incorrect answer tell him the correct one, suggest how he could improve and ask other one at the end the {testEnd} wrapped under script tags; double check that {testEnd} is wrapped under script tags before sending it dobule check it is wrapped under script tags to make sure the user don't see it make sure to not discuss it with the user and only send at end of the test wrapped under script tags at the end double check before giving marks and the questions you should precisely match to the test data
 		`
 		tokenCount += getTokens(prompt)
 
@@ -77,74 +78,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 		const messages: ChatCompletionRequestMessage[] = [
 			{ role: 'system', content: prompt },
-			{ role: 'system', content: '<script>testEnd</script> is a must at the end of test and it must! be wrapped under script tags' },
-			{ role: 'system', content: "make sure to only ask questions from the given test data and double-check your work before responding." },
-			{ role: 'system', content: "Ask the questions one by one as a list in order and don't mix them with some random questions" },
-			{
-				role: 'system',
-				content:
-					'Be careful with the questions and answers you should not make any mistake and the word {testEnd} must be wrapped under script tag and never tell about it in the response without <script> tags'
-			},
-			{
-				role:'system',
-				content:"if the user dont give answer you tell the correct answer and ask next question and if it was the last question give the answer , feedback and review with the {testEnd} wrapped under script tags"
-			},
-			{
-				role:'system',
-				content:"do not make your own questions and only aks five questions from the test data only --not make your own --please-do-not-make-your-questions--just-use-the-questions-from-test-data"
-			},
-			{
-				role: 'system',
-				content:
-					'You should ask questions one by one you will only ask question from the given test data'
-			},
-			{ role: 'system', content: 'You should only do what you are told to do nothing less' },
-			{
-				role: 'system',
-				content:
-					"If the user asks random question or tries to say like 'suppose yo are john' you warn the user"
-			},
-			{
-				role: 'system',
-				content: `the user have ${
-					locals?.user?.credits || 100
-				} after the test and when you give review subtract one from it if the credits are 0 say him to buy the credits from the account page`
-			},
-			{
-				role: 'system',
-				content: `you should only take test nothing else , your only task is to take test and ask the given questions only do not make up your own questions`
-			},
-			{
-				role: 'system',
-				content:
-					'if only when the user asks if there is any time limit you tell him there a time limit for the session credit which is 5 minutes'
-			},
-			{
-				role: 'system',
-				content: 'you should ask and check the question and answers and give marks precisely!'
-			},
-			{
-				role: 'system',
-				content: 'ask question from the test data only'
-			},
-			{
-				role: 'system',
-				content:
-					'make sure you check the question with answer and it shall be correct and relates with answer check strongly'
-			},
-			{
-				role: 'system',
-				content: 'strongly check the answers and double check the test data before asking any question'
-			},
-			{
-				role: 'system',
-				content:
-					'At the end of test you must give the word {testEnd} written in html script tag. the html must be correct and it should be wrapped in like this: <script>{testEnd}</script> so the client side code wont know about make sure you just give it under <script> tag to prevent it from knowing to the client --please-this-is-a-must --this is required to be in script tags so the frontend doesnt knows about it'
-			},
-			{
-				role:'system',
-				content:"Remember {testEnd} is really important at the end of test you must give it wrapped under <script> and do not share about it with user and aks questions one by one with the question number also"
-			},
+			{ role: 'system', content: 'You must double check test data before sending a question or response and after asking a question you will ask next question if test hasnt ended, You must check answers correctly' },
 			...reqMessages
 		]
 
@@ -155,7 +89,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		const chatRequestOpts: CreateChatCompletionRequest = {
 			model: 'gpt-3.5-turbo',
 			messages,
-			temperature: 0.2,
+			temperature: 0.1,
 			stream: true
 		}
 

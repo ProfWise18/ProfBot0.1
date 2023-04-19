@@ -8,13 +8,17 @@
 	import { showMessage } from '$lib/util'
 	import { goto } from '$app/navigation'
 
+  let {questions} = data;
 	let query: string = ''
 	let answer: string = ''
 	let loading: boolean = false
+  let testStarted :boolean = false
 	let submitted: boolean = false
 	let chatMessages: ChatCompletionRequestMessage[] = []
 	let scrollToDiv: HTMLDivElement
 	let testEnded: boolean = false
+  let currentQuestionIndex = 0;
+  let marks = [];
 
 	function scrollToBottom() {
 		setTimeout(function () {
@@ -35,111 +39,45 @@
 	let isTimeOver: boolean = false
 
 	const handleSubmit = async () => {
-		loading = true
-		if (query.trim() == '') {
-			showMessage({
-				type: 'Error',
-				_message: 'Please enter a valid input.'
-			})
-			loading = false
-			return
-		}
-		chatMessages = [...chatMessages, { role: 'user', content: query }]
-		query = ''
-		const eventSource = new SSE('/api/tester', {
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			payload: JSON.stringify({
-				messages: chatMessages,
-				shareLink: $page.params.link,
-				isTimeOver: isTimeOver
-			})
-		})
+    if(query.trim() == ""){
+      showMessage({
+        _message:"Please type a valid answer",
+        type:"Error",
+      })
+      query = "";
 
-		eventSource.addEventListener('error', handleError)
+      loading = false;
+      return false;
+    }
 
-		eventSource.addEventListener('message', async (e) => {
-			scrollToBottom()
-			try {
-				loading = false
-				if (e.data === '[DONE]') {
-					if (timeLeft == 300) {
-						startTimer()
-					}
-					chatMessages = [...chatMessages, { role: 'assistant', content: answer }]
-					//try to catch the {testEnd} in the answer it will be hidden under script tags
-					try {
-						const jsonStr = answer.substring(answer.indexOf('{'), answer.indexOf('}') + 1)
-						// console.log(jsonStr)
-						// const jsonStr = false;
-						if (jsonStr && $page.data.admin) {
-							showMessage({
-								type: 'success',
-								_message: 'The test is over admin!'
-							})
-							answer = ''
-							testEnded = true;
-							return false
-						}
-						if (jsonStr) {
-							try {
-								fetch('/api/student/reduce', {
-									method: 'POST',
-									body: JSON.stringify({
-										id: $page.data.user.userId,
-										shareLink: $page.params.link,
-										score: {}
-									})
-								})
-									.then((msg) => msg.json())
-									.then((res) => {
-										if (credits <= 0) {
-											showMessage({
-												_message: 'No credits left buy more from account or wait another week.',
-												type: 'Error'
-											})
-											loading = true
-										}
-										if (res.status == 200) {
-											credits--
-											testEnded = true
-											answer = ''
-											showMessage({
-												_message: 'Credit used.',
-												type: 'success'
-											})
-											loading = true
-										} else {
-											showMessage({
-												_message: 'An error occured!',
-												type: 'Error'
-											})
-										}
-									})
-							} catch (e) {
-								console.log(e)
-							}
-						} else {
-						}
-					} catch (e) {}
-					answer = ''
-					console.log(e.data)
-					return
-				}
+    if(!testStarted){
 
-				const completionResponse = JSON.parse(e.data)
-				const [{ delta }] = completionResponse.choices
+      if(query.trim().includes("start")){
+        testStarted = true;
+        query = "";
+        startTimer();
+        chatMessages = [...chatMessages,{role:'assistant',content:`Lets get started the first questions is ${questions[currentQuestionIndex].questionText} (${questions[currentQuestionIndex].marks} marks)`}]
+      }else{
+        chatMessages = [...chatMessages,{role:'assistant',content:`I didn't understand you please type "start" to get started.`}]
+        query = "";
+        loading = false;
+      }
 
-				if (delta.content) {
-					answer = (answer ?? '') + delta.content
-				}
-			} catch (err) {
-				handleError(err)
-			}
-		})
+      return false;
+    }
 
-		eventSource.stream()
+    let payload = JSON.stringify({question:questions[currentQuestionIndex].questionText,answer:questions[currentQuestionIndex].correctAnswer,marks:questions[currentQuestionIndex].marks});
+
+    let req = await fetch("/api/tester",{
+      method:"POST",
+      body:payload,
+    })
+
+    let res = await req.json();
+    console.log(res)
+
+    loading = false
+    query = "";
 		scrollToBottom()
 	}
 
@@ -150,14 +88,14 @@
 		console.error(err)
 	}
 
-	function formatTime(seconds) {
+	function formatTime(seconds:any) {
 		const minutes = Math.floor(seconds / 60)
 		const remainingSeconds = seconds % 60
 		return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`
 	}
 
 	let timeLeft: number = 300
-	let credits: number
+	let credits:number;
 	if ($page.data.admin) {
 		credits = 5
 	} else {
@@ -166,21 +104,23 @@
 	const startTimer = () => {
 		let timerId = setInterval(() => {
 			timeLeft--
-			if (timeLeft == 0) {
-				if (testEnded) {
-					return false
-				}
-
-				
-
-				if ($page.data.admin) {
-					clearInterval(timerId)
-					showMessage({ type: 'Success', _message: 'Hey admin test is ended!' })
-					return false
-				}
-
+			if(testEnded && timeLeft ==0){
 				clearInterval(timerId)
-				
+				goto("/");
+			}
+			if (timeLeft == 0) {
+
+				if(testEnded){
+					return false;
+				}
+
+				if($page.data.admin){
+					clearInterval(timerId);
+					showMessage({type:"Success",_message:"Hey admin test is ended!"})
+					return false;
+				}
+
+				clearInterval(timerId); 
 
 				fetch('/api/student/reduce', {
 					method: 'POST',
@@ -202,14 +142,14 @@
 						if (res.status == 200) {
 							credits--
 							testEnded = true
-							answer = ''
+							answer = "";
 							showMessage({
 								_message: 'Credit used.',
 								type: 'success'
 							})
 							setTimeout(() => {
-								goto('/')
-							}, 1000)
+								goto("/");
+							},1000)
 						} else {
 							showMessage({
 								_message: 'An error occured!',
@@ -217,10 +157,10 @@
 							})
 						}
 					})
-					
 				clearInterval(timerId)
-				goto('/')
 			}
+
+
 		}, 1000)
 	}
 

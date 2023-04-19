@@ -1,5 +1,6 @@
 import { client } from '$lib/database'
 import { error, redirect } from '@sveltejs/kit'
+import _ from 'lodash'
 
 export async function load({ params, locals }) {
 	const link = params.link
@@ -16,6 +17,11 @@ export async function load({ params, locals }) {
 			questions: true
 		}
 	})
+
+	test.questions = _.shuffle(test.questions);
+	if(test.questions.length > 5){
+		test.questions.length = 5;
+	}
 
 	if (!test || !locals.admin && !locals.user) {
 		throw redirect(302, '/')
