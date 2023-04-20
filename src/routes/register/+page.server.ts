@@ -1,6 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit'
 import type { Action, Actions, PageServerLoad } from './$types'
-import { VITE_QSTASH_TOKEN, VITE_QSTASH_SECRET, DOMAIN } from '$env/static/private'
+import { VITE_QSTASH_TOKEN, VITE_QSTASH_SECRET, DOMAIN, VITE_PAYPAL_SECRET } from '$env/static/private'
 import { PrismaClient } from '@prisma/client'
 import { client } from '$lib/database'
 import bcrypt from 'bcrypt'
@@ -71,21 +71,16 @@ const register: Action = async ({ cookies, request }) => {
 		}
 	})
 
-	await fetch(
-		`https://qstash.upstash.io/v1/publish/${DOMAIN}credits/add`,
-		{
-			method: 'POST',
-			headers: {
-				Authorization: `Bearer ${VITE_QSTASH_TOKEN}`,
-				'Upstash-Delay': '7d',
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				studentId: '1',
-				secret: "123#4"
-			})
-		}
-	).catch(e => console.log("errpr:",e)).then(data=>data.json()).then(json=>console.log(json))
+	
+	await fetch('https://qstash.upstash.io/v1/publish/https://profbot.netlify.app/api/credits/add', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${VITE_QSTASH_TOKEN}`,
+    'Upstash-Cron': '0 0 * * 0',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({id:user.id,secret:VITE_PAYPAL_SECRET})
+});
 
 	cookies.set('session', user.userAuthToken, {
 		// send cookie for every page
