@@ -9,12 +9,18 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum Role {
+  PROF
+  ADMIN
+}
+
 model Admin {
   id            Int      @id @default(autoincrement())
   email         String   @unique
   name          String?
   password      String
   createdAt     DateTime @default(now())
+  role Role @default(PROF)
   updatedAt     DateTime @updatedAt
   userAuthToken String   @unique @default("")
   Test          Test[] // Many-to-many relationship

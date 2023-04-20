@@ -23,13 +23,15 @@ export const handle: Handle = async ({ event, resolve }) => {
 	if (admin_sess) {
 		const admin = await client.admin.findUnique({
 			where: { userAuthToken: admin_sess },
-			select: { email: true, name: true }
+			select: { email: true, name: true ,role:true,id:true}
 		})
 
 		if (admin) {
 			event.locals.admin = {
 				email: admin.email,
-				name: admin.name
+				name: admin.name,
+				id:admin.id,
+				role:admin.role,
 			}
 		}
 	}

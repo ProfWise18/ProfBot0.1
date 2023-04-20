@@ -34,6 +34,7 @@
 
 <div class="container">
 	<h1 class="text-2xl">Welcome {$page.data.admin.name}</h1>
+	{#if $page.data.admin.role == "ADMIN"}
 	<div class="grid grid-cols-1 lg:grid-cols-2 mt-14 gap-5 ">
 		<div class="w-full bg-black text-white p-10">
 			<h2 class="text-2xl flex gap-4 items-center "><i class="fa fa-users" /> Students</h2>
@@ -78,4 +79,17 @@
 			</div>
 		</div>
 	</div>
-</div>
+	{:else}
+	<div class="grid grid-cols-1 lg:grid-cols-2 mt-14 gap-5 ">
+		<a href="/admin/test">
+			<div class="w-full bg-black text-white p-10">
+				<h2 class="text-2xl flex gap-4 items-center "><i class="fa fa-pen" /> Tests</h2>
+				<div class="mt-4">
+					View Your Tests
+				</div>
+			</div>
+		</a>
+		
+	</div>
+	{/if}
+	</div>

@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 	import DropDown from './DropDown.svelte'
 	const ico = $page.data.admin.name[0];
+	console.log($page.data.admin.role)
 </script>
 
 <div
@@ -13,12 +14,14 @@
 		</div>
 	<div class="flex flex-col w-full mt-14">
 		<SideLink title="Dashboard" icon="fa fa-gauge" href="/admin" />
-		<SideLink title="Students" icon="fa fa-users" href="/admin/students" />
 		<DropDown href='/admin/test' name='Tests'>
 			<SideLink title="View Tests" icon="fa fa-book" href="/admin/test/" />
 			<SideLink title="Create Test" icon="fa fa-plus" href="/admin/test/create" />
 		</DropDown>
+		{#if $page.data.admin.role == "ADMIN"}
 		<SideLink title="Professors" icon="fa fa-plus" href="/admin/professor" />
+		<SideLink title="Students" icon="fa fa-users" href="/admin/students" />
+		{/if}
 		<SideLink title="Settings" icon="fa fa-gear" href="/admin/settings" />
 	</div>
 	<div class="mt-auto">

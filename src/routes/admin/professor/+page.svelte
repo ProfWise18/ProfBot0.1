@@ -24,7 +24,8 @@
 	let loading = false
 	let currentProfessor = {
 		name: '',
-		email: ''
+		email: '',
+		role:"PROF",
 	}
 	let currentProfessorModal = false
 
@@ -109,6 +110,7 @@
 			})
 			let res = await req.json()
 			professors[currentProfessorIndex].name = currentProfessor.name
+			professors[currentProfessorIndex].role = currentProfessor.role
 			professors = professors
 			if (res.status == 200) {
 				showMessage({
@@ -127,6 +129,7 @@
 		currentProfessorModal = true
 		currentProfessor.email = data.email
 		currentProfessor.name = data.name
+		currentProfessor.role = data.role
 		currentProfessorIndex = index
 	}
 </script>
@@ -145,6 +148,7 @@
 					<th>Email</th>
 					<th>Tests Created</th>
 					<th>Sessions Used</th>
+					<th>Role</th>
 					<th>Actions</th>
 				</tr>
 			</thead>
@@ -155,6 +159,9 @@
 						<td>{professor.email}</td>
 						<td>{professor?.Test?.length || 0}</td>
 						<td>{professorSessionUsed?.filter((f) => f.profId == professor.id)?.length || 0}</td>
+						<td>
+							{professor.role}
+							</td>
 						<td>
 							<button on:click={() => setCurrentProfessor(professor, i)} class="btn ">Edit</button>
 							<button class="btn btn-error" on:click={() => deleteProf(professor.id)}>Delete</button
@@ -237,6 +244,18 @@
 				class="input input-bordered w-full "
 			/>
 		</div>
+		<label class="label" style="margin-top:10px">
+			<span class="label-text">Professor Role</span>
+		</label>
+		<select bind:value={currentProfessor.role} name="role" style="background: #000;width:100%;padding:10px 20px;margin-top:2px;border-radius:50px">
+			{#if currentProfessor.role == "ADMIN"}
+			<option selected value="ADMIN">Admin</option>
+			<option  value="PROF">Professor</option>
+				{:else}
+				<option value="ADMIN">Admin</option>
+			<option selected value="PROF">Professor</option>
+			{/if}
+		</select>
 		<button aria-busy={loading} class="btn-p w-full mt-4 cursor-pointer rounded-lg">Edit</button>
 	</form>
 </Modal>

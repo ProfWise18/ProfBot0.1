@@ -1,5 +1,6 @@
 <script>
 	import { goto } from '$app/navigation'
+	import { page } from '$app/stores'
 	import { showMessage } from '$lib/util'
 	import { onMount } from 'svelte'
 
@@ -9,9 +10,12 @@
 		busy = true
 		const response = await fetch('/api/test/')
 		let res = await response.json()
-		data = res.data
 		busy = false
-		console.log(res.data)
+		if($page.data.role != "ADMIN"){
+			data = res.data
+		  data= data.filter(r => r.profId == $page.data.admin.id)
+		}
+
 	}
 
 	onMount(() => {
