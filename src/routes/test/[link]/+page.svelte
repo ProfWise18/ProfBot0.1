@@ -219,6 +219,7 @@
 					})
 					
 				clearInterval(timerId)
+				alert("Time is up!");
 				goto('/')
 			}
 		}, 1000)
