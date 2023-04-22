@@ -171,6 +171,13 @@
 					return false
 				}
 
+				if(timeLeft == 60){
+					showMessage({
+						type:"Error",
+						_message:"You only have one minute left now!"
+					})
+				}
+
 				
 
 				if ($page.data.admin) {
